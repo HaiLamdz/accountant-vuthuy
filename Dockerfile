@@ -1,4 +1,4 @@
-FROM php:8.2-fpm
+FROM php:8.2-fpm-bullseye
 
 RUN apt-get update && apt-get install -y \
     nginx \
@@ -26,8 +26,4 @@ COPY nginx.conf /etc/nginx/conf.d/default.conf
 ENV PORT=10000
 EXPOSE 10000
 
-CMD php artisan migrate --force && \
-    php artisan config:cache && \
-    php artisan route:cache && \
-    php artisan view:cache && \
-    service nginx start && php-fpm
+CMD php artisan migrate --force && service nginx start && php-fpm
