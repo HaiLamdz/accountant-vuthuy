@@ -1,6 +1,6 @@
-FROM php:8.2-fpm-bullseye
+FROM php:8.2-cli-bullseye
 
-# Install dependencies
+# Cài thư viện hệ thống
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
@@ -9,27 +9,27 @@ RUN apt-get update && apt-get install -y \
     libzip-dev \
     libpng-dev \
     libonig-dev \
-    libicu-dev
+    libicu-dev \
+    && docker-php-ext-install pdo pdo_mysql pdo_pgsql mbstring zip gd intl
 
-# Install PHP extensions
-RUN docker-php-ext-install pdo pdo_mysql pdo_pgsql mbstring zip gd intl
-
-# Set working directory
 WORKDIR /var/www/html
 
-# Copy source code
+# Copy code
 COPY . .
 
-# Install Composer
+# Cài composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-
 RUN composer install --no-dev --optimize-autoloader
 
-# Fix permissions
+# Quyền thư mục
 RUN chown -R www-data:www-data storage bootstrap/cache
 
-# Expose the port Render uses
+# Render dùng biến PORT
 ENV PORT=10000
 EXPOSE 10000
 
-CMD ["php-fpm", "-y", "/usr/local/etc/php-fpm.conf", "-R"]
+# (Tuỳ chọn) Nếu DB ok, chạy migrate luôn:
+# CMD php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=${PORT}
+
+# Đơn giản nhất: chỉ chạy server Laravel
+CMD php artisan serve --host=0.0.0.0 --port=${PORT}
