@@ -204,18 +204,10 @@ Tất cả các lỗi đều được bắt và hiển thị thông báo thân t
 | POST | `/import` | Import Excel |
 | GET | `/template` | Tải file mẫu |
 
-## 🤝 Đóng góp
-
-Mọi đóng góp đều được chào đón! Hãy tạo Pull Request hoặc Issue nếu bạn có ý tưởng cải thiện.
-
-## 📄 License
-
-MIT License
-
 ## 👨‍💻 Tác giả
 
-Phát triển bởi Kiro AI Assistant
+Phát triển bởi HaiLam
 
 ---
 
-**Lưu ý**: Đây là phiên bản demo, nên sử dụng cho mục đích học tập và phát triển. Với môi trường production, cần thêm các tính năng bảo mật như authentication, authorization, và backup dữ liệu.
+**Lưu ý**: Đây là phiên bản demo, nên sử dụng cho mục đích cá nhân
