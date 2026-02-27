@@ -1,213 +1,210 @@
-# 📊 Hệ Thống Quản Lý Thu Nợ
+# 🏪 Hệ Thống Quản Lý Thu Phí Chợ
 
-Ứng dụng web quản lý thu nợ cho các quầy hàng, giúp theo dõi và quản lý các khoản thu hàng ngày.
+Ứng dụng web quản lý thu phí dịch vụ sử dụng diện tích bán hàng tại chợ, được xây dựng bằng Laravel 11.
 
-## ✨ Tính năng
+## ✨ Tính Năng
 
-- 📅 **Quản lý theo ngày**: Xem danh sách các quầy cần thu theo ngày
-- 💰 **Thu tiền nhanh**: Đánh dấu đã thu tiền chỉ với 1 click
-- 📊 **Thống kê**: Xem tổng thu, số lượng đã thu/chưa thu
-- 🔍 **Lọc dữ liệu**: Lọc theo ngày, tháng, năm và trạng thái
-- 📤 **Import/Export Excel**: Nhập và xuất dữ liệu dễ dàng
-- 📱 **Responsive**: Giao diện tối ưu cho mobile
+### � Quản  Lý Thu Phí
+- Quản lý danh sách hộ kinh doanh và số quầy
+- Theo dõi công nợ theo tháng/năm
+- Phân loại: Tháng này / Nợ cũ
+- Tìm kiếm theo tên hoặc số quầy
+- Lọc theo trạng thái (Đã thu / Chưa thu)
 
-## 🛠️ Công nghệ sử dụng
+### � Thug Tiền
+- Đánh dấu đã thu tiền với timestamp
+- Hiển thị thời gian thu chính xác
+- Thống kê tổng tiền, đã thu, chưa thu
 
-- **Backend**: Laravel 12
-- **Database**: SQLite
-- **Frontend**: Blade Templates, CSS thuần
-- **Excel**: Maatwebsite/Excel
+### 📈 Báo Cáo
+- Báo cáo thu tiền theo ngày
+- Lọc theo tháng nợ
+- Xuất Excel danh sách thu phí
 
-## 📋 Yêu cầu hệ thống
+### 📥 Import/Export
+- Import dữ liệu từ Excel (hỗ trợ công thức)
+- Export danh sách ra Excel
+- Template mẫu để import
+
+### 🔐 Bảo Mật
+- Đăng nhập session-based
+- Middleware bảo vệ routes
+- Xác nhận khi đăng xuất
+
+## 🛠️ Yêu Cầu Hệ Thống
 
 - PHP >= 8.2
 - Composer
-- SQLite (hoặc MySQL/PostgreSQL)
+- MySQL/MariaDB
+- Node.js & NPM (cho assets)
 
-## 🚀 Cài đặt
+## 📦 Cài Đặt
 
-### 1. Clone dự án
-
+### 1. Clone Repository
 ```bash
 git clone <repository-url>
-cd accountant_hailam
+cd <project-folder>
 ```
 
-### 2. Cài đặt dependencies
-
+### 2. Cài Đặt Dependencies
 ```bash
 composer install
+npm install
 ```
 
-### 3. Cấu hình môi trường
-
+### 3. Cấu Hình Environment
 ```bash
 cp .env.example .env
 php artisan key:generate
 ```
 
-### 4. Tạo database
+Chỉnh sửa file `.env`:
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=ten_database
+DB_USERNAME=username
+DB_PASSWORD=password
 
+APP_TIMEZONE=Asia/Ho_Chi_Minh
+```
+
+### 4. Tạo Database
 ```bash
 php artisan migrate
 ```
 
-### 5. Tạo dữ liệu mẫu (tùy chọn)
-
+### 5. Build Assets
 ```bash
-php artisan db:seed --class=DebtCollectionSeeder
+npm run build
 ```
 
-### 6. Chạy ứng dụng
-
+### 6. Chạy Server
 ```bash
 php artisan serve
 ```
 
-Truy cập: http://localhost:8000
+Truy cập: `http://localhost:8000`
 
-## 📱 Truy cập từ điện thoại/máy tính khác
+## 🔑 Đăng Nhập
 
-### Sử dụng ngrok (Khuyến nghị)
+**Thông tin mặc định:**
+- Username: `admin`
+- Password: `thuy6868`
 
-1. Tải ngrok: https://ngrok.com/download
-2. Chạy Laravel server:
-```bash
-php artisan serve
-```
-3. Mở terminal mới và chạy:
-```bash
-ngrok http 8000
-```
-4. Copy link `https://xxx.ngrok.io` và truy cập từ bất kỳ đâu
+> ⚠️ Nên đổi mật khẩu sau khi cài đặt
 
-### Sử dụng Cloudflare Tunnel (Miễn phí)
+## 📋 Hướng Dẫn Sử Dụng
 
-1. Tải cloudflared: https://github.com/cloudflare/cloudflared/releases
-2. Chạy:
-```bash
-cloudflared tunnel --url http://localhost:8000
-```
+### Import Dữ Liệu Excel
 
-## 📖 Hướng dẫn sử dụng
+1. Tải template mẫu từ nút "Template"
+2. Điền dữ liệu theo format:
+   - Cột A: STT
+   - Cột B: Họ kinh doanh
+   - Cột C: Quầy ki ốt
+   - Cột D: Số tiền phải nộp 1 tháng
+   - Cột E-P: Tháng 1 đến Tháng 12
+   - Cột Q: Tổng 1 năm
+3. Click "Import" và chọn file
+4. Hệ thống tự động import và tạo records
 
-### Thêm khoản thu nợ mới
+**Lưu ý:**
+- Hỗ trợ công thức Excel (VD: `=1530000+225000`)
+- Tự động bỏ qua dòng trống
+- Không import trùng lặp
 
-1. Click nút **"+ Thêm mới"**
-2. Điền thông tin:
-   - Họ tên
-   - Số quầy
-   - Số tiền
-   - Ngày thu dự kiến
-   - Tháng/Năm
-3. Click **"Lưu"**
+### Thu Tiền
 
-### Thu tiền
+1. Tìm hộ kinh doanh cần thu
+2. Click "Đã thu tiền"
+3. Hệ thống tự động lưu thời gian thu
 
-1. Tìm quầy cần thu trong danh sách
-2. Click nút **"Đã thu tiền"**
-3. Hệ thống tự động lưu ngày thu thực tế
+### Xem Báo Cáo
 
-### Lọc dữ liệu
+1. Click "📊 Báo cáo ngày"
+2. Chọn ngày cần xem
+3. Lọc theo tháng nợ (nếu cần)
 
-- **Chọn ngày**: Xem danh sách thu theo ngày cụ thể
-- **Chọn trạng thái**: Lọc "Tất cả", "Chưa thu" hoặc "Đã thu"
-- **Xem thống kê**: Click nút "Thống kê" để xem theo tháng/năm khác
-
-### Import dữ liệu từ Excel
-
-1. Click nút **"Import"**
-2. Chọn file Excel (.xlsx, .xls, .csv)
-3. File cần có các cột:
-   - `ho_ten`: Họ tên
-   - `so_quay`: Số quầy (VD: Q01)
-   - `so_tien`: Số tiền (VD: 500000)
-   - `ngay_thu_du_kien`: Ngày thu (VD: 2026-02-18)
-   - `thang`: Tháng (1-12)
-   - `nam`: Năm (VD: 2026)
-
-4. Tải file mẫu bằng cách click **"📋 Mẫu"**
-
-### Export dữ liệu ra Excel
-
-1. Click nút **"Export"**
-2. File Excel sẽ được tải về với tên: `thu-no-thang-{thang}-{nam}.xlsx`
-
-## 📁 Cấu trúc dự án
+## 🗂️ Cấu Trúc Dự Án
 
 ```
-accountant_hailam/
 ├── app/
 │   ├── Http/Controllers/
-│   │   └── DebtCollectionController.php
-│   ├── Models/
-│   │   └── DebtCollection.php
+│   │   ├── AuthController.php          # Xử lý đăng nhập/đăng xuất
+│   │   └── DebtCollectionController.php # Quản lý thu phí
+│   ├── Imports/
+│   │   └── DebtCollectionsMonthlyImport.php # Import Excel
 │   ├── Exports/
-│   │   └── DebtCollectionsExport.php
-│   └── Imports/
-│       └── DebtCollectionsImport.php
-├── database/
-│   ├── migrations/
-│   │   └── 2024_02_18_000001_create_debt_collections_table.php
-│   └── seeders/
-│       └── DebtCollectionSeeder.php
-├── resources/
-│   └── views/
-│       └── debt-collections/
-│           ├── index.blade.php
-│           └── create.blade.php
+│   │   └── DebtCollectionsExport.php    # Export Excel
+│   └── Models/
+│       └── DebtCollection.php           # Model công nợ
+├── resources/views/
+│   ├── auth/
+│   │   └── login.blade.php              # Trang đăng nhập
+│   └── debt-collections/
+│       ├── index.blade.php              # Trang chính
+│       ├── bao-cao-ngay.blade.php       # Báo cáo ngày
+│       └── create.blade.php             # Thêm mới
 └── routes/
-    └── web.php
+    └── web.php                          # Định nghĩa routes
 ```
 
-## 🗄️ Cấu trúc Database
+## 🎨 Giao Diện
 
-### Bảng `debt_collections`
+- Thiết kế responsive, mobile-friendly
+- Màu chủ đạo: Xanh lá (#27ae60, #2ecc71)
+- Font: Arial, sans-serif
+- Icons: Emoji native
 
-| Cột | Kiểu | Mô tả |
-|-----|------|-------|
-| id | bigint | ID tự tăng |
-| ho_ten | string | Họ tên người kinh doanh |
-| so_quay | string | Số quầy |
-| so_tien | decimal | Số tiền cần thu |
-| thang | integer | Tháng (1-12) |
-| nam | integer | Năm |
-| ngay_thu_du_kien | date | Ngày dự kiến thu |
-| trang_thai | enum | Trạng thái: 'chua_thu', 'da_thu' |
-| ngay_thu_thuc_te | date | Ngày thực tế đã thu |
-| created_at | timestamp | Ngày tạo |
-| updated_at | timestamp | Ngày cập nhật |
+## 🚀 Deploy Lên Hosting
 
-## 🔧 Xử lý lỗi
+### Yêu Cầu Hosting
+- PHP 8.1+
+- MySQL/MariaDB
+- 200MB dung lượng
+- 512MB RAM
+- LiteSpeed/Apache/Nginx
 
-Tất cả các lỗi đều được bắt và hiển thị thông báo thân thiện:
-- ✅ Thành công: Thông báo màu xanh
-- ❌ Lỗi: "Hệ thống đang gặp sự cố, vui lòng thử lại sau!"
+### Các Bước Deploy
 
-## 🎨 Giao diện
+1. Upload code lên hosting
+2. Cấu hình `.env` với thông tin database
+3. Chạy migrations: `php artisan migrate`
+4. Cấu hình document root về `/public`
+5. Đảm bảo folder `storage` có quyền ghi
 
-- Thiết kế đơn giản, dễ sử dụng
-- Tối ưu cho mobile
-- Màu sắc nhẹ nhàng, không chói mắt
-- Nút bấm có hiệu ứng shadow nổi bật
+### Cấu Hình .htaccess (nếu dùng Apache)
 
-## 📝 Routes
+File `/public/.htaccess` đã có sẵn, đảm bảo mod_rewrite được bật.
 
-| Method | URL | Chức năng |
-|--------|-----|-----------|
-| GET | `/` | Trang chủ - Danh sách thu nợ |
-| GET | `/them-moi` | Form thêm mới |
-| POST | `/them-moi` | Lưu khoản thu mới |
-| POST | `/thu/{id}` | Đánh dấu đã thu |
-| POST | `/xoa/{id}` | Xóa khoản thu |
-| GET | `/export` | Export Excel |
-| POST | `/import` | Import Excel |
-| GET | `/template` | Tải file mẫu |
+## 🔧 Bảo Trì
 
-## 👨‍💻 Tác giả
+### Xóa Dữ Liệu Cũ
+```bash
+php artisan tinker
+>>> DB::table('debt_collections')->where('nam', '<', 2026)->delete();
+```
 
-Phát triển bởi HaiLam
+### Backup Database
+```bash
+mysqldump -u username -p database_name > backup.sql
+```
+
+### Clear Cache
+```bash
+php artisan cache:clear
+php artisan config:clear
+php artisan view:clear
+```
+
+## 📝 License
+
+Copyright © 2026 HAILAM. All rights reserved.
 
 ---
 
-**Lưu ý**: Đây là phiên bản demo, nên sử dụng cho mục đích cá nhân
+**Phiên bản:** 1.0.0  
+**Ngày cập nhật:** 26/02/2026
+**Lưu ý:** Đây là phiên bản demo, nên sử dụng cho mục đích cá nhân
