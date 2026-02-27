@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thêm khoản thu nợ</title>
+    <title>Thêm khoản thu giá dịch vụ</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: Arial, sans-serif; padding: 15px; background: #f5f5f5; }
@@ -16,6 +16,7 @@
         .form-group input:focus, .form-group select:focus { outline: none; border-color: #3498db; }
         .error { color: #dc2626; font-size: 12px; margin-top: 3px; }
         .required { color: #dc2626; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
         .btn { padding: 12px; border: none; cursor: pointer; font-size: 14px; text-align: center; text-decoration: none; display: block; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         .btn-primary { background: #3498db; color: white; }
@@ -33,7 +34,7 @@
 <body>
     <div class="container">
         <div class="card">
-            <h1>Thêm khoản thu nợ</h1>
+            <h1>Thêm khoản thu giá dịch vụ</h1>
             
             <form method="POST" action="{{ route('debt-collections.store') }}">
                 @csrf
@@ -56,41 +57,45 @@
 
                 <div class="form-group">
                     <label>Số tiền (VNĐ) <span class="required">*</span></label>
-                    <input type="number" name="so_tien" value="{{ old('so_tien') }}" min="0" step="1000" placeholder="500000" required>
+                    <input type="text" id="so_tien_display" placeholder="500,000" style="font-size: 16px;">
+                    <input type="hidden" name="so_tien" id="so_tien" value="{{ old('so_tien') }}" required>
                     @error('so_tien')
                         <div class="error">{{ $message }}</div>
                     @enderror
                 </div>
 
-                <div class="form-group">
-                    <label>Ngày thu dự kiến <span class="required">*</span></label>
-                    <input type="date" name="ngay_thu_du_kien" value="{{ old('ngay_thu_du_kien', now()->format('Y-m-d')) }}" required>
-                    @error('ngay_thu_du_kien')
-                        <div class="error">{{ $message }}</div>
-                    @enderror
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Tháng <span class="required">*</span></label>
+                        <select name="thang" required>
+                            @for($i = 1; $i <= 12; $i++)
+                                <option value="{{ $i }}" {{ old('thang', now()->month) == $i ? 'selected' : '' }}>
+                                    Tháng {{ $i }}
+                                </option>
+                            @endfor
+                        </select>
+                        @error('thang')
+                            <div class="error">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="form-group">
+                        <label>Năm <span class="required">*</span></label>
+                        <select name="nam" required>
+                            @for($y = 2024; $y <= 2030; $y++)
+                                <option value="{{ $y }}" {{ old('nam', now()->year) == $y ? 'selected' : '' }}>
+                                    {{ $y }}
+                                </option>
+                            @endfor
+                        </select>
+                        @error('nam')
+                            <div class="error">{{ $message }}</div>
+                        @enderror
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label>Tháng <span class="required">*</span></label>
-                    <select name="thang" required>
-                        @for($i = 1; $i <= 12; $i++)
-                            <option value="{{ $i }}" {{ old('thang', now()->month) == $i ? 'selected' : '' }}>
-                                Tháng {{ $i }}
-                            </option>
-                        @endfor
-                    </select>
-                    @error('thang')
-                        <div class="error">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <div class="form-group">
-                    <label>Năm <span class="required">*</span></label>
-                    <input type="number" name="nam" value="{{ old('nam', now()->year) }}" min="2020" max="2030" required>
-                    @error('nam')
-                        <div class="error">{{ $message }}</div>
-                    @enderror
-                </div>
+                <!-- Hidden input cho ngay_thu_du_kien (set ngày 1 của tháng) -->
+                <input type="hidden" name="ngay_thu_du_kien" id="ngay_thu_du_kien" value="{{ old('ngay_thu_du_kien') }}">
 
                 <div class="actions">
                     <button type="submit" class="btn btn-primary">Lưu</button>
@@ -98,6 +103,50 @@
                 </div>
             </form>
         </div>
+    </div>
+
+    <script>
+        const displayInput = document.getElementById('so_tien_display');
+        const hiddenInput = document.getElementById('so_tien');
+        const thangSelect = document.querySelector('select[name="thang"]');
+        const namSelect = document.querySelector('select[name="nam"]');
+        const ngayThuInput = document.getElementById('ngay_thu_du_kien');
+
+        // Format số khi nhập
+        displayInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/[^\d]/g, '');
+            
+            if (value) {
+                e.target.value = parseInt(value).toLocaleString('vi-VN');
+                hiddenInput.value = value;
+            } else {
+                e.target.value = '';
+                hiddenInput.value = '';
+            }
+        });
+
+        // Tự động set ngày thu dự kiến = ngày 1 của tháng
+        function updateNgayThu() {
+            const thang = thangSelect.value.padStart(2, '0');
+            const nam = namSelect.value;
+            ngayThuInput.value = `${nam}-${thang}-01`;
+        }
+
+        thangSelect.addEventListener('change', updateNgayThu);
+        namSelect.addEventListener('change', updateNgayThu);
+
+        // Set giá trị ban đầu
+        updateNgayThu();
+
+        // Khôi phục giá trị cũ nếu có lỗi
+        @if(old('so_tien'))
+            displayInput.value = parseInt('{{ old('so_tien') }}').toLocaleString('vi-VN');
+            hiddenInput.value = '{{ old('so_tien') }}';
+        @endif
+    </script>
+
+    <div style="text-align: center; padding: 20px; color: #999; font-size: 12px;">
+        COPYRIGHT BY HAILAM
     </div>
 </body>
 </html>
